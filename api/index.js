@@ -5,22 +5,35 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken')
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
+const imageDownloader = require("image-downloader");
 const User = require('./models/User.js');
-const app = express();
+const path = require('path');
+const fs = require('fs');
 
+const app = express();
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwtSecret = 'bcJHM3OtnrDexx71nWHIdy6fvoOt34ae'
 
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
 }));
 
+//Upload directory
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir);
+}
+
+//Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL);
 
+
+//Test Route
 app.get('/test', (req, res) => {
     res.json('test ok');
 })
@@ -39,7 +52,6 @@ app.post('/register', async (req, res) => {
         res.status(422).json(error);
     }
 })
-
 
 //Login
 app.post('/login', async (req, res) => {
@@ -67,6 +79,7 @@ app.post('/login', async (req, res) => {
     }
 })
 
+//Profile
 app.get('/profile', (req, res) => {
     const { token } = req.cookies;
     if (token) {
@@ -80,8 +93,32 @@ app.get('/profile', (req, res) => {
     }
 })
 
-app.post('/logout', (req,res)=>{
+//Logout
+app.post('/logout', (req, res) => {
     res.clearCookie('token').json('Logged Out')
 })
 
-app.listen(4000);
+//Upload-by-Link
+app.post('/upload-by-link', async (req, res) => {
+    const { link } = req.body;
+    const newName = 'photo' + Date.now() + '.jpg';
+    const destination = path.join(__dirname, 'uploads', newName);
+    try{
+        await imageDownloader.image({
+            url: link,
+            dest: destination,
+        });
+        res.json({ filename: newName });
+    } catch(error){
+        console.error('Error downloading image', error);
+        res.status(500).json({
+            error: 'Failed to download image'
+        });
+    }
+});
+
+// Start the server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

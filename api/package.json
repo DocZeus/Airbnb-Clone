@@ -4,8 +4,13 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "downloader": "^0.1.2",
     "express": "^4.19.2",
+    "image": "^1.0.2",
+    "image-downloader": "^4.3.0",
+    "images-downloader": "^1.0.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.4.0"
+    "mongoose": "^8.4.0",
+    "unix-dgram": "^2.0.6"
   }
 }
