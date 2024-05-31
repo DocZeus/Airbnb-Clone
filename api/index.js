@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config();
 const cookieParser = require('cookie-parser');
 const imageDownloader = require("image-downloader");
+const multer = require('multer');
 const User = require('./models/User.js');
 const path = require('path');
 const fs = require('fs');
@@ -116,6 +117,21 @@ app.post('/upload-by-link', async (req, res) => {
         });
     }
 });
+
+//Upload-from-device
+const photosMiddleware = multer({dest: 'uploads/'});
+app.post('/upload',photosMiddleware.array('photos', 100) , (req, res) => {
+    const uploadedFiles = [];
+    for (let i=0; i< req.files.length; i++){
+        const {path, originalname} = req.files[i];
+        const parts = originalname.split('.');
+        const ext = parts[parts.length - 1];
+        const newPath = path + '.' + ext;
+        fs.renameSync(path, newPath);
+        uploadedFiles.push(newPath.replace('uploads\\',''));
+    }
+    res.json(uploadedFiles);
+})
 
 // Start the server
 const PORT = process.env.PORT || 4000;
