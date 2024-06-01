@@ -7,7 +7,7 @@ import { Navigate, useParams } from "react-router-dom";
 
 export default function PlacesFormPage() {
 
-    const {id} = useParams();
+    const { id } = useParams();
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
@@ -20,10 +20,21 @@ export default function PlacesFormPage() {
     const [redirect, setRedirect] = useState(false);
 
     useEffect(() => {
-        if (!id){
+        if (!id) {
             return;
         }
-        axios.get('/places/'+id)
+        axios.get('/places/' + id).then(response => {
+            const { data } = response;
+            setTitle(data.title);
+            setAddress(data.address);
+            setAddedPhotos(data.photos);
+            setDescription(data.description);
+            setPerks(data.perks);
+            setExtraInfo(data.extraInfo);
+            setCheckIn(data.checkIn);
+            setCheckOut(data.checkOut);
+            setMaxGuests(data.maxGuests);
+        })
     }, [id]);
 
     function inputHeader(text) {
@@ -47,24 +58,32 @@ export default function PlacesFormPage() {
         )
     }
 
-    async function addNewPlace(e) {
+    async function savePlace(e) {
         e.preventDefault();
-        await axios.post('/places', {
+        const placeData = {
             title, address, addedPhotos,
-            description, perks, extraInfo,
-            checkIn, checkOut, maxGuests
-        });
-        setRedirect(true);
+                description, perks, extraInfo,
+                checkIn, checkOut, maxGuests
+        };
+        if (id) {
+            await axios.put('/places', {
+                id, ...placeData
+            });
+            setRedirect(true);
+        } else{
+            await axios.post('/places', placeData);
+            setRedirect(true);
+        }
     }
 
-    if (redirect){
+    if (redirect) {
         return <Navigate to="/account/places" />
     }
 
     return (
         <div>
             <AccountNav />
-            <form onSubmit={addNewPlace}>
+            <form onSubmit={savePlace}>
                 {preInput('Title', 'Title for your place, should be short and catchy as in advertisement')}
                 <input type='text' value={title} onChange={e => setTitle(e.target.value)} placeholder="title, for example: My lovely apartment" />
                 {preInput('Address', 'Address to this place')}
