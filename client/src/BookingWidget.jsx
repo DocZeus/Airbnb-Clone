@@ -1,13 +1,32 @@
 import { useState } from "react"
-import {differenceInCalendarDays} from 'date-fns'
+import { differenceInCalendarDays } from 'date-fns'
+import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 export default function BookingWidget({ place }) {
     const [checkIn, setCheckIn] = useState('');
     const [checkOut, setCheckOut] = useState('');
     const [numberOfGuests, setNumberOfGuests] = useState(1);
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [redirect, setRedirect] = useState('');
+
     let numberOfNights = 0;
-    if (checkIn && checkOut){
+    if (checkIn && checkOut) {
         numberOfNights = differenceInCalendarDays(checkOut, checkIn);
+    }
+
+    async function bookThisPlace() {
+        const response = await axios.post('/bookings', {
+            place: place._id, price: numberOfNights * place.price,
+            checkIn, checkOut, numberOfGuests, name, phone
+        })
+        const bookingId = response.data._id;
+        setRedirect(`/account/bookings/${bookingId}`);
+    }
+
+    if (redirect) {
+        return <Navigate to={redirect} />
     }
 
     return (
@@ -30,11 +49,19 @@ export default function BookingWidget({ place }) {
                     <label>Number of guests:</label>
                     <input type="number" value={numberOfGuests} onChange={e => setNumberOfGuests(e.target.value)} />
                 </div>
+                {numberOfNights > 0 && (
+                    <div className="py-3 px-4 border-t">
+                        <label>You full name:</label>
+                        <input type="text" value={name} onChange={e => setName(e.target.value)} />
+                        <label>You phone number:</label>
+                        <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} />
+                    </div>
+                )}
             </div>
-            <button className="primary mt-4">
+            <button onClick={bookThisPlace} className="primary mt-4">
                 Book this place
                 {numberOfNights > 0 && (
-                    <span> ${numberOfNights * place.price}</span>
+                    <span> for ${numberOfNights * place.price}</span>
                 )}
             </button>
         </div>

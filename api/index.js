@@ -9,6 +9,7 @@ const imageDownloader = require("image-downloader");
 const multer = require('multer');
 const User = require('./models/User.js');
 const Place = require('./models/Place.js');
+const Booking = require('./models/Booking.js');
 const path = require('path');
 const fs = require('fs');
 
@@ -185,7 +186,21 @@ app.put('/places', async (req, res) => {
 
 //Index-places
 app.get('/places', async (req, res) => {
-    res.json( await Place.find());
+    res.json(await Place.find());
+})
+
+//
+app.post('/bookings', (req, res) => {
+    const { place, checkIn, checkOut, price,
+        numberOfGuests, name, phone } = req.body;
+    Booking.create({
+        place, checkIn, checkOut, price,
+        numberOfGuests, name, phone
+    }).then((doc) => {
+        res.json(doc);
+    }).catch((err) => {
+        throw err;
+    })
 })
 
 // Start the server
