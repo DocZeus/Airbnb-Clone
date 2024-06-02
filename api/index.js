@@ -35,6 +35,16 @@ if (!fs.existsSync(uploadsDir)) {
 //Connect to MongoDB
 mongoose.connect(process.env.MONGO_URL);
 
+//Get-Token
+function getUserDataFromReq(req) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(req.cookies.token, jwtSecret, {}, async (err, userData) => {
+            if (err) throw err;
+            resolve(userData);
+        });
+    })
+    
+}
 
 //Test Route
 app.get('/test', (req, res) => {
@@ -189,18 +199,25 @@ app.get('/places', async (req, res) => {
     res.json(await Place.find());
 })
 
-//
-app.post('/bookings', (req, res) => {
+//Creating-booking
+app.post('/bookings', async (req, res) => {
+    const userData = await getUserDataFromReq(req);
     const { place, checkIn, checkOut, price,
         numberOfGuests, name, phone } = req.body;
     Booking.create({
         place, checkIn, checkOut, price,
-        numberOfGuests, name, phone
+        numberOfGuests, name, phone, user:userData.id,
     }).then((doc) => {
         res.json(doc);
     }).catch((err) => {
         throw err;
     })
+})
+
+//
+app.get('/bookings', async (req, res) => {
+    const userData = await getUserDataFromReq(req);
+    res.json( await Booking.find({user: userData.id}).populate('place'));
 })
 
 // Start the server

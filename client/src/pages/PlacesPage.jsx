@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import AccountNav from "../AccountNav";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PlaceImg from "../PlaceImg";
 
 export default function PlacesPage() {
     const [places, setPlaces] = useState([]);
     useEffect(() => {
-        axios.get('/user-places').then(({data}) => {
+        axios.get('/user-places').then(({ data }) => {
             setPlaces(data);
         })
     })
@@ -22,16 +23,14 @@ export default function PlacesPage() {
                 </Link>
             </div>
             <div className="mt-4">
-                {places.length>0 && places.map(place => (
-                    <Link to={'/account/places/'+place._id} className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl" key={place}>
+                {places.length > 0 && places.map(place => (
+                    <Link to={'/account/places/' + place._id} className="flex cursor-pointer gap-4 bg-gray-100 p-4 rounded-2xl" key={place}>
                         <div className="flex size-32 bg-gray-300 grow shrink-0">
-                            {place.photos.length && (
-                                <img className="object-cover" src={'http://localhost:4000/uploads/'+place.photos[0]} alt=""/>
-                            )}
+                            <PlaceImg place={place} />
                         </div>
                         <div className="grow-0 shrink">
-                        <h2 className="text-xl">{place.title}</h2>
-                        <p className="text-sm mt-2">{place.description}</p>
+                            <h2 className="text-xl">{place.title}</h2>
+                            <p className="text-sm mt-2">{place.description}</p>
                         </div>
                     </Link>
                 ))}
