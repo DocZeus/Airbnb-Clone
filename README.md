@@ -4,16 +4,16 @@ This project is a simplified version of Airbnb, allowing users to browse and boo
 
 Features
 
-• User authentication: Users can sign up, log in, and log out.
-• Property listings: Property owners can list their spaces with details such as location, amenities, and pricing.
-• Booking management: Users can view their bookings.
+• User authentication: Users can sign up, log in, and log out  
+• Property listings: Property owners can list their spaces with details such as location, amenities, and pricing  
+• Booking management: Users can view their bookings  
 
 Usage
 
-• Sign up or log in to access the platform.
-• Explore listings
-• Book a space by selecting dates.
-• Manage bookings.
+• Sign up or log in to access the platform  
+• Explore listings  
+• Book a space by selecting dates  
+• Manage bookings  
 
 Tech Stack
 
