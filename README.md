@@ -1,6 +1,5 @@
-A simplified version of Airbnb for booking accommodations.
-
 Introduction
+
 This project is a simplified version of Airbnb, allowing users to browse and book accommodations for their trips. It provides a platform for property owners to list their spaces and for travelers to discover and book them.
 
 Features
