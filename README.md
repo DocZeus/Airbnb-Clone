@@ -17,7 +17,7 @@ Usage
 
 Tech Stack
 
-Frontend: React
-Backend: Node.js, Express, MongoDB
-Authentication: JWT
-Other libraries/tools: Axios, React Router, Tailwind CSS
+Frontend: React  
+Backend: Node.js, Express, MongoDB  
+Authentication: JWT  
+Other libraries/tools: Axios, React Router, Tailwind CSS  
