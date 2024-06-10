@@ -10,10 +10,10 @@ Features
 
 Usage
 
-Sign up or log in to access the platform.
-Explore listings
-Book a space by selecting dates.
-Manage bookings.
+• Sign up or log in to access the platform.
+• Explore listings
+• Book a space by selecting dates.
+• Manage bookings.
 
 Tech Stack
 
